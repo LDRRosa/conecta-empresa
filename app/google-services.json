@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "274210828357",
+    "project_id": "conectaempresa-e710b",
+    "storage_bucket": "conectaempresa-e710b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274210828357:android:870e4f949ef91e3260732c",
+        "android_client_info": {
+          "package_name": "com.ifgoiano.conectaempresa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOlVzA-0gwZuiCVZ98m7QD68kvuZFiv2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

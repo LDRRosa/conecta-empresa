@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="#111"
+    android:padding="24dp">
+
+    <TextView
+        android:text="Criar Conta"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/inputNome"
+        android:hint="Nome completo"
+        android:inputType="textPersonName"
+        android:backgroundTint="#F6C90E"
+        android:textColorHint="#F6C90E"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/inputEmail"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:backgroundTint="#F6C90E"
+        android:textColorHint="#F6C90E"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/inputSenha"
+        android:hint="Senha"
+        android:inputType="textPassword"
+        android:backgroundTint="#F6C90E"
+        android:textColorHint="#F6C90E"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/inputConfirmarSenha"
+        android:hint="Confirmar senha"
+        android:inputType="textPassword"
+        android:backgroundTint="#F6C90E"
+        android:textColorHint="#F6C90E"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnCriarConta"
+        android:text="Criar Conta"
+        android:backgroundTint="#F6C90E"
+        android:textColor="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp" />
+
+</LinearLayout>
