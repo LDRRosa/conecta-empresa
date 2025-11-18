@@ -24,15 +24,17 @@ class LoginActivity : AppCompatActivity() {
             viewModel.login(email, senha)
         }
 
-        // 👉 Navegação para tela de cadastro
+        // 👉 Tela de cadastro
         binding.tvCriarConta.setOnClickListener {
-            val intent = Intent(this, CadastroActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, CadastroActivity::class.java))
         }
 
+        // 👉 Observa resultado do login
         viewModel.loginResult.observe(this) { sucesso ->
             if (sucesso) {
                 Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, HomeActivity::class.java))
+                finish() // impede voltar para a tela de login
             } else {
                 Toast.makeText(this, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
             }

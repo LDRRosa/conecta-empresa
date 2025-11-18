@@ -40,7 +40,7 @@ android {
         jvmTarget = "11"
     }
 
-    // ❌ Aqui estava errado — o correto é usar "=" em vez de ";"
+
     buildFeatures {
         viewBinding = true
         dataBinding = true
