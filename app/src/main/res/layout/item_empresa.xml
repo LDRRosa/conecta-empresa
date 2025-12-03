@@ -8,10 +8,11 @@
 
     <ImageView
         android:id="@+id/imgEmpresa"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:scaleType="centerCrop"
-        android:layout_marginEnd="12dp" />
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_logo_circle" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -26,12 +27,29 @@
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
+
+
         <TextView
-            android:id="@+id/tvDistancia"
+            android:id="@+id/tvDescricao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="300m"
-            android:textColor="#BBBBBB" />
+            android:text="Categoria da empresa"
+            android:textColor="#BBBBBB"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="4.5"
+            android:isIndicator="true"
+            android:stepSize="0.1"
+            android:progressTint="#FFC107"
+            android:progressBackgroundTint="#777777"/>
+
     </LinearLayout>
 
 </LinearLayout>

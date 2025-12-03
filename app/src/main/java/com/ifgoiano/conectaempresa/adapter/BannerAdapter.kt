@@ -1,28 +1,35 @@
 package com.ifgoiano.conectaempresa.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.ifgoiano.conectaempresa.databinding.ItemBannerBinding
+import com.bumptech.glide.Glide
+import com.ifgoiano.conectaempresa.R
 
-class BannerAdapter(private val banners: List<Int>) :
-    RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
-
-    inner class BannerViewHolder(val binding: ItemBannerBinding)
-        : RecyclerView.ViewHolder(binding.root)
+class BannerAdapter(
+    private val banners: List<String>  // <-- AGORA É LISTA DE URL (String)
+) : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
-        val binding = ItemBannerBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return BannerViewHolder(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_banner, parent, false)
+
+        return BannerViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        holder.binding.imgBanner.setImageResource(banners[position])
+        val url = banners[position]
+
+        Glide.with(holder.itemView.context)
+            .load(url)
+            .into(holder.imageBanner)
     }
 
-    override fun getItemCount() = banners.size
+    override fun getItemCount(): Int = banners.size
+
+    class BannerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val imageBanner: ImageView = itemView.findViewById(R.id.imgBanner)
+    }
 }

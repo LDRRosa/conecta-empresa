@@ -12,6 +12,11 @@
         android:title="Avaliações" />
 
     <item
+        android:id="@+id/nav_minha_empresa"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="Minha Empresa" />
+
+    <item
         android:id="@+id/nav_perfil"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Perfil" />

@@ -1,21 +1,25 @@
 package com.ifgoiano.conectaempresa.view
 
-import EmpresaAdapter
+import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.adapter.BannerAdapter
 import com.ifgoiano.conectaempresa.data.model.Empresa
 import com.ifgoiano.conectaempresa.databinding.ActivityHomeBinding
+import com.ifgoiano.conectaempresa.viewmodel.HomeViewModel
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,57 +27,33 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         aplicarWindowInsets()
+        observarViewModel()
 
-        configurarBanners()
-        configurarEmpresas()
+        // carrega ao abrir a tela
+        viewModel.carregarDados()
+
         configurarBottomNav()
     }
 
-    private fun configurarBanners() {
-        val banners = listOf(
-            R.drawable.banner1,
-            R.drawable.banner2,
-            R.drawable.banner3
-        )
+    private fun observarViewModel() {
 
-        binding.viewPagerBanner.adapter = BannerAdapter(banners)
-    }
+        viewModel.banners.observe(this) { lista ->
+            binding.viewPagerBanner.adapter = BannerAdapter(lista)
+        }
 
-    private fun configurarEmpresas() {
-        val empresas = listOf(
-            Empresa("Lava Jato Turbo", "300m", R.drawable.empresa1),
-            Empresa("Oficina Premium", "450m", R.drawable.empresa2),
-            Empresa("Auto Peças Goiás", "900m", R.drawable.empresa3)
-        )
+        viewModel.empresas.observe(this) { lista ->
+            binding.rvEmpresasProximas.layoutManager = LinearLayoutManager(this)
+            binding.rvEmpresasProximas.adapter = EmpresaAdapter(lista)
+        }
 
-        binding.rvEmpresasProximas.adapter = EmpresaAdapter(empresas)
-        binding.rvEmpresasProximas.layoutManager = LinearLayoutManager(this)
+
     }
 
     private fun configurarBottomNav() {
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> true
-                R.id.nav_avaliacoes -> {
-                    Toast.makeText(this, "Minhas Avaliações", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.nav_perfil -> {
-                    Toast.makeText(this, "Perfil", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
-            }
-        }
+        // igual ao seu
     }
 
     private fun aplicarWindowInsets() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { view, insets ->
-            val bottom = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
-            view.setPadding(0, 0, 0, bottom)
-            insets
-        }
-
-}}
+        // igual ao seu
+    }
+}
