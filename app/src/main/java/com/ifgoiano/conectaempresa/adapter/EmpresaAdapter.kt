@@ -28,16 +28,15 @@ class EmpresaAdapter(private val lista: List<Empresa>) :
 
         holder.binding.tvNome.text = empresa.nome
 
-        // ✅ 1. NOVO: Preenche a descrição/categoria (usando 'categoria' de Empresa.kt)
+
         holder.binding.tvDescricao.text = empresa.categoria
 
-        // ✅ 2. NOVO: Preenche o Rating Bar (convertendo Double para Float)
         holder.binding.ratingBar.rating = empresa.avaliacao.toFloat()
 
         // Carrega a imagem usando Glide
         Glide.with(holder.itemView.context)
             .load(empresa.imageUrl)
-            .circleCrop() // ✅ 3. NOVO: Aplica o corte circular para o logo
+            .circleCrop()
             .into(holder.binding.imgEmpresa)
     }
 

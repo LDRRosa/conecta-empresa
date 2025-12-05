@@ -3,22 +3,24 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/icon_casa"
         android:title="Início" />
 
     <item
         android:id="@+id/nav_avaliacoes"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/icon_avaliacoes"
         android:title="Avaliações" />
 
     <item
         android:id="@+id/nav_minha_empresa"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/icon_empresa"
         android:title="Minha Empresa" />
 
     <item
         android:id="@+id/nav_perfil"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="Perfil" />
+        android:title="Perfil"
+        android:icon="@drawable/icon_perfil"
+
+        />
 
 </menu>

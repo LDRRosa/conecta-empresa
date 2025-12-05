@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">conecta empresa</string>
+
+    <string name="perfil">Perfil</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="salvar">Salvar</string>
+    <string name="selecione_uma_foto">Selecione uma foto</string>
+    <string name="nenhuma_empresa">Você não possui empresas cadastradas.</string>
 </resources>

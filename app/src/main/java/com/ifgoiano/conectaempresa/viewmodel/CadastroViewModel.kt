@@ -26,7 +26,7 @@ class CadastroViewModel(
         }
 
         viewModelScope.launch {
-            val resultado = repository.cadastrarUsuario(email, senha)
+            val resultado = repository.cadastrarUsuario(nome, email, senha)
             if (resultado.isSuccess) {
                 _status.value = "Conta criada com sucesso!"
             } else {

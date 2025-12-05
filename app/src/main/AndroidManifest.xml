@@ -21,6 +21,7 @@
 
         <activity android:name=".view.CadastroActivity" />
         <activity android:name=".view.HomeActivity"/>
+        <activity android:name=".view.PerfilActivity"/>
 
 
         <activity

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.R
 
 class BannerAdapter(
-    private val banners: List<String>  // <-- AGORA É LISTA DE URL (String)
+    private val banners: List<String>
 ) : RecyclerView.Adapter<BannerAdapter.BannerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {

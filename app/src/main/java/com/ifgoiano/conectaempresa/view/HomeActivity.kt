@@ -1,5 +1,6 @@
 package com.ifgoiano.conectaempresa.view
 
+import android.content.Intent
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import android.os.Bundle
 import android.widget.Toast
@@ -26,10 +27,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        aplicarWindowInsets()
         observarViewModel()
-
-        // carrega ao abrir a tela
         viewModel.carregarDados()
 
         configurarBottomNav()
@@ -50,10 +48,22 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun configurarBottomNav() {
-        // igual ao seu
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    // Já estamos na Home, nada a fazer ou rolar para o topo
+                    true
+                }
+                R.id.nav_perfil -> {
+                    //Navegar para a tela de Perfil
+                    startActivity(Intent(this, PerfilActivity::class.java))
+                    true
+                }
+                // ... outros itens (avaliacoes, minha_empresa)
+                else -> false
+            }
+        }
     }
 
-    private fun aplicarWindowInsets() {
-        // igual ao seu
-    }
+
 }

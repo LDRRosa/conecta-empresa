@@ -24,12 +24,12 @@ class LoginActivity : AppCompatActivity() {
             viewModel.login(email, senha)
         }
 
-        // 👉 Tela de cadastro
+        //Tela de cadastro
         binding.tvCriarConta.setOnClickListener {
             startActivity(Intent(this, CadastroActivity::class.java))
         }
 
-        // 👉 Observa resultado do login
+        //Observa resultado do login
         viewModel.loginResult.observe(this) { sucesso ->
             if (sucesso) {
                 Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
