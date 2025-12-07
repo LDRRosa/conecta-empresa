@@ -10,6 +10,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ifgoiano.conectaempresa.databinding.ActivityCadastroEmpresaBinding
 import com.ifgoiano.conectaempresa.viewmodel.CadastroEmpresaViewModel
+import com.ifgoiano.conectaempresa.adapter.CategoriaAdapter
+import com.ifgoiano.conectaempresa.adapter.CategoriaItem
 
 class CadastroEmpresaActivity : AppCompatActivity() {
 
@@ -121,21 +123,16 @@ class CadastroEmpresaActivity : AppCompatActivity() {
     }
 
     private fun configurarDropdownCategorias() {
-        val categorias = arrayOf(
-            "Restaurante",
-            "Mercado",
-            "Farmácia",
-            "Moda",
-            "Serviços",
-            "Outros"
+        val categorias = listOf(
+            CategoriaItem("🍔", "Restaurante"),
+            CategoriaItem("🛒", "Mercado"),
+            CategoriaItem("💊", "Farmácia"),
+            CategoriaItem("✂️", "Moda"),
+            CategoriaItem("🛠️", "Serviços"),
+            CategoriaItem("➕", "Outros")
         )
 
-        val adapter = android.widget.ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            categorias
-        )
-
+        val adapter = CategoriaAdapter(this, categorias)
         binding.etCategoria.setAdapter(adapter)
 
         // Desabilita a digitação inicial
@@ -143,11 +140,11 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         binding.etCategoria.keyListener = null
 
         binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
-            if (categorias[position] == "Outros") {
+            if (categorias[position].nome == "Outros") {
                 // Habilita a digitação
                 binding.etCategoria.setText("")
                 binding.etCategoria.hint = "Digite a categoria"
-                binding.etCategoria.inputType = android.text.InputType.TYPE_CLASS_TEXT
+                binding.etCategoria.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS
                 binding.etCategoria.keyListener = android.text.method.TextKeyListener.getInstance()
                 binding.etCategoria.requestFocus()
             } else {
@@ -156,5 +153,8 @@ class CadastroEmpresaActivity : AppCompatActivity() {
                 binding.etCategoria.keyListener = null
             }
         }
+
+        // Customiza a cor de fundo do dropdown
+        binding.etCategoria.setDropDownBackgroundResource(android.R.color.transparent)
     }
 }
