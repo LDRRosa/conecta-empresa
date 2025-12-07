@@ -3,21 +3,25 @@ package com.ifgoiano.conectaempresa.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import com.ifgoiano.conectaempresa.data.model.Empresa
-import com.ifgoiano.conectaempresa.databinding.ActivityPerfilBinding
+import com.ifgoiano.conectaempresa.databinding.FragmentPerfilBinding
 import com.ifgoiano.conectaempresa.viewmodel.PerfilViewModel
 
-class PerfilActivity : BaseActivity() {
+class PerfilFragment : Fragment() {
 
-    private lateinit var binding: ActivityPerfilBinding
+    private var _binding: FragmentPerfilBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: PerfilViewModel by viewModels()
     private var novaFotoUri: Uri? = null
     private var isEditMode = false
@@ -31,15 +35,21 @@ class PerfilActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPerfilBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPerfilBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setEditingEnabled(false)
         observarViewModel()
         configurarListeners()
-        configurarBottomNavigation(binding.bottomNavigation, R.id.nav_perfil)
     }
 
     private fun configurarListeners() {
@@ -51,7 +61,11 @@ class PerfilActivity : BaseActivity() {
 
         binding.btnSalvar.setOnClickListener {
             if (!isEditMode) {
-                Toast.makeText(this, "Entre em modo de edição primeiro.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Entre em modo de edição primeiro.",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -70,6 +84,10 @@ class PerfilActivity : BaseActivity() {
         binding.btnLogout.setOnClickListener {
             viewModel.fazerLogout()
         }
+
+        binding.fabAdicionarEmpresa.setOnClickListener {
+            startActivity(Intent(requireContext(), CadastroEmpresaActivity::class.java))
+        }
     }
 
     private fun setEditingEnabled(enabled: Boolean) {
@@ -83,41 +101,41 @@ class PerfilActivity : BaseActivity() {
     }
 
     private fun observarViewModel() {
-        viewModel.user.observe(this) { user ->
+        viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.tvNome.text = user.name
             binding.tvEmail.text = user.email
             carregarImagemPerfil(user.imageurl)
             configurarListaEmpresas(user.empresas)
         }
 
-        viewModel.status.observe(this) { mensagem ->
+        viewModel.status.observe(viewLifecycleOwner) { mensagem ->
             if (!mensagem.isNullOrEmpty()) {
-                Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), mensagem, Toast.LENGTH_SHORT).show()
                 viewModel.limparStatus()
             }
         }
 
-        viewModel.loading.observe(this) { loading ->
+        viewModel.loading.observe(viewLifecycleOwner) { loading ->
             binding.btnSalvar.isEnabled = !loading
             binding.btnEditarPerfil.isEnabled = !loading
             binding.btnSelecionarFoto.isEnabled = !loading
             binding.btnLogout.isEnabled = !loading
         }
 
-        viewModel.sucessoAtualizacao.observe(this) { sucesso ->
+        viewModel.sucessoAtualizacao.observe(viewLifecycleOwner) { sucesso ->
             if (sucesso == true) {
-                Toast.makeText(this, "Perfil atualizado.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Perfil atualizado.", Toast.LENGTH_SHORT).show()
                 isEditMode = false
                 setEditingEnabled(false)
             }
         }
 
-        viewModel.logout.observe(this) { deveDeslogar ->
+        viewModel.logout.observe(viewLifecycleOwner) { deveDeslogar ->
             if (deveDeslogar == true) {
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(requireContext(), LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
-                finish()
+                requireActivity().finish()
             }
         }
     }
@@ -131,7 +149,7 @@ class PerfilActivity : BaseActivity() {
             binding.rvEmpresas.visibility = View.VISIBLE
             binding.rvEmpresas.apply {
                 if (adapter == null) {
-                    layoutManager = LinearLayoutManager(this@PerfilActivity)
+                    layoutManager = LinearLayoutManager(requireContext())
                     isNestedScrollingEnabled = false
                 }
                 adapter = EmpresaAdapter(empresas)
@@ -149,5 +167,10 @@ class PerfilActivity : BaseActivity() {
         } else {
             binding.imgPerfil.setImageResource(R.drawable.icon_perfil)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

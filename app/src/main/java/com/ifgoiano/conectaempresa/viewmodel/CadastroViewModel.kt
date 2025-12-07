@@ -14,6 +14,9 @@ class CadastroViewModel(
     private val _status = MutableLiveData<String>()
     val status: LiveData<String> = _status
 
+    private val _navegarParaLogin = MutableLiveData<Boolean>()
+    val navegarParaLogin: LiveData<Boolean> = _navegarParaLogin
+
     fun criarConta(nome: String, email: String, senha: String, confirmarSenha: String) {
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) {
             _status.value = "Preencha todos os campos."
@@ -29,6 +32,7 @@ class CadastroViewModel(
             val resultado = repository.cadastrarUsuario(nome, email, senha)
             if (resultado.isSuccess) {
                 _status.value = "Conta criada com sucesso!"
+                _navegarParaLogin.value = true
             } else {
                 _status.value = "Erro: ${resultado.exceptionOrNull()?.message}"
             }

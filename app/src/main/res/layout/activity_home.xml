@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#111"
     android:fitsSystemWindows="true"
-    >
+    android:orientation="vertical">
 
     <!-- Barra de pesquisa -->
     <EditText
         android:id="@+id/etBusca"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Buscar empresas..."
-        android:paddingHorizontal="16dp"
-        android:drawablePadding="10dp"
         android:layout_margin="12dp"
-        android:radius="8dp"
-        android:background="@drawable/bg_search_field" android:drawableStart="@android:drawable/ic_menu_search"
-        android:textColorHint="#AAAAAA"
-        android:textColor="@color/black"
-        android:inputType="text"
+        android:background="@drawable/bg_search_field"
+        android:clickable="true"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:hint="Buscar empresas..."
         android:imeOptions="actionSearch"
-
-        />
+        android:inputType="text"
+        android:paddingHorizontal="16dp"
+        android:textColor="@color/black"
+        android:textColorHint="#AAAAAA" />
 
     <!-- Conteúdo -->
     <ScrollView
@@ -33,28 +32,26 @@
         android:layout_weight="1">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
 
-            <!-- Carrossel de banners -->
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPagerBanner"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_margin="12dp" />
 
-            <!-- Título seção -->
             <TextView
                 android:id="@+id/tvEmpresasProximas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:text="Empresas próximas"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:layout_margin="12dp" />
+                android:textSize="20sp" />
 
-            <!-- Lista de empresas (RecyclerView) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvEmpresasProximas"
                 android:layout_width="match_parent"
@@ -63,17 +60,26 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Navegação inferior -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"  android:layout_marginBottom="16dp"
-        app:cardCornerRadius="16dp"             app:cardElevation="8dp"                 app:cardBackgroundColor="#1A1A1A">       <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"          android:background="@android:color/transparent" app:itemIconTint="@color/bnv_item_color"
-        app:itemTextColor="@color/bnv_item_color"
-        app:menu="@menu/menu_bottom_nav" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="#1A1A1A"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="81dp"
+            android:background="@android:color/transparent"
+            app:itemIconSize="24dp"
+            app:itemIconTint="@color/bnv_item_color"
+            app:itemRippleColor="@android:color/transparent"
+            app:itemTextColor="@color/bnv_item_color"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/menu_bottom_nav" />
     </androidx.cardview.widget.CardView>
 </LinearLayout>

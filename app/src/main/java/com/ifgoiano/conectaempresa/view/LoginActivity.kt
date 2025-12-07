@@ -18,26 +18,32 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Verifica se já está logado
+        viewModel.verificarSessao()
+
+        configurarObservadores()
+        configurarBotoes()
+    }
+
+    private fun configurarObservadores() {
+        viewModel.navegarParaHome.observe(this) { navegar ->
+            if (navegar) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
+    }
+
+    private fun configurarBotoes() {
         binding.btnEntrar.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            val senha = binding.etSenha.text.toString()
-            viewModel.login(email, senha)
+            viewModel.fazerLogin(
+                binding.etEmail.text.toString(),
+                binding.etSenha.text.toString()
+            )
         }
 
-        //Tela de cadastro
         binding.tvCriarConta.setOnClickListener {
             startActivity(Intent(this, CadastroActivity::class.java))
-        }
-
-        //Observa resultado do login
-        viewModel.loginResult.observe(this) { sucesso ->
-            if (sucesso) {
-                Toast.makeText(this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, HomeActivity::class.java))
-                finish() // impede voltar para a tela de login
-            } else {
-                Toast.makeText(this, "Email ou senha inválidos", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }

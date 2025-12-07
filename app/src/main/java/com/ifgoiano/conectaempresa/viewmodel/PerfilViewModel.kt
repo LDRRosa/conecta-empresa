@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ifgoiano.conectaempresa.data.model.User
+import com.ifgoiano.conectaempresa.data.repository.AuthRepository
 import com.ifgoiano.conectaempresa.data.repository.PerfilRepository
 import kotlinx.coroutines.launch
 
 class PerfilViewModel(
-    private val repository: PerfilRepository = PerfilRepository()
+    private val repository: PerfilRepository = PerfilRepository(),
+    private val authRepository: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
     private val _user = MutableLiveData<User>()
@@ -24,6 +26,9 @@ class PerfilViewModel(
 
     private val _sucessoAtualizacao = MutableLiveData<Boolean>()
     val sucessoAtualizacao: LiveData<Boolean> get() = _sucessoAtualizacao
+
+    private val _logout = MutableLiveData<Boolean>()
+    val logout: LiveData<Boolean> = _logout
 
     init {
         carregarPerfil()
@@ -53,13 +58,11 @@ class PerfilViewModel(
             return
         }
 
-
         _loading.value = true
         viewModelScope.launch {
             repository.atualizarPerfilCompleto(nome, novaFotoUri)
                 .onSuccess {
                     _status.value = "Perfil atualizado com sucesso!"
-                    // Recarrega perfil atualizado
                     carregarPerfil()
                     _sucessoAtualizacao.value = true
                 }.onFailure { e ->
@@ -68,6 +71,11 @@ class PerfilViewModel(
                 }
             _loading.value = false
         }
+    }
+
+    fun fazerLogout() {
+        authRepository.logout()
+        _logout.value = true
     }
 
     fun limparStatus() {

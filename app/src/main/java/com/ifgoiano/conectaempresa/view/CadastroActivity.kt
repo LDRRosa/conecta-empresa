@@ -1,5 +1,6 @@
 package com.ifgoiano.conectaempresa.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.activity.viewModels
@@ -32,6 +33,15 @@ class CadastroActivity : AppCompatActivity() {
 
         viewModel.status.observe(this) { mensagem ->
             Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.navegarParaLogin.observe(this) { navegar ->
+            if (navegar) {
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                startActivity(intent)
+                finish()
+            }
         }
     }
 }

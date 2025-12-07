@@ -50,12 +50,13 @@ android {
 
 dependencies {
 
+    implementation("com.github.santalu:maskara:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

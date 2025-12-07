@@ -11,23 +11,26 @@ class AuthRepository {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    fun usuarioEstaLogado(): Boolean = auth.currentUser != null
+
+    fun logout() {
+        auth.signOut()
+    }
+
     suspend fun cadastrarUsuario(nome: String, email: String, senha: String): Result<Unit> {
         return try {
-            //Cria o usuário no Firebase Authentication
             val userCredential = auth.createUserWithEmailAndPassword(email, senha).await()
-            val userId = userCredential.user?.uid ?: throw Exception("UID do usuário nulo após cadastro.")
+            val userId =
+                userCredential.user?.uid ?: throw Exception("UID do usuário nulo após cadastro.")
 
-            // Cria o objeto de perfil (Usando o modelo User existente)
             val userProfile = User(
                 name = nome,
                 email = email,
                 createdAt = Timestamp.now(),
-                // imageurl e empresas usam ficam sem valor pois no cadastro o usuário não fornece esses dados
                 imageurl = "",
                 empresas = emptyList()
             )
 
-            // Salva o perfil na coleção usuarios
             db.collection("usuarios")
                 .document(userId)
                 .set(userProfile)

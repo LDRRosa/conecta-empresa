@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categorias_empresa">
+        <item>Alimentação</item>
+        <item>Saúde e Beleza</item>
+        <item>Tecnologia</item>
+        <item>Educação</item>
+        <item>Varejo</item>
+        <item>Serviços</item>
+        <item>Outros</item>
+    </string-array>
+</resources>

@@ -1,55 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:padding="10dp"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#222">
-
-    <ImageView
-        android:id="@+id/imgEmpresa"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:scaleType="centerCrop"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/bg_logo_circle" />
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/card_bg"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvNome"
-            android:layout_width="wrap_content"
+        <androidx.cardview.widget.CardView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:cardCornerRadius="35dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/imgEmpresa"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Logo da empresa"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Empresa XPTO"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvNome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Empresa XPTO"
+                android:textColor="@color/text_white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tvDescricao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Categoria da empresa"
+                android:textColor="@color/primary_yellow"
+                android:textSize="13sp" />
 
-        <TextView
-            android:id="@+id/tvDescricao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Categoria da empresa"
-            android:textColor="#BBBBBB"
-            android:textSize="12sp"
-            android:layout_marginBottom="4dp"/>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressBackgroundTint="#444444"
+                android:progressTint="#FFC107"
+                android:rating="4.5"
+                android:stepSize="0.1" />
+        </LinearLayout>
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="4.5"
-            android:isIndicator="true"
-            android:stepSize="0.1"
-            android:progressTint="#FFC107"
-            android:progressBackgroundTint="#777777"/>
-
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_more"
+            app:tint="@color/text_gray" />
     </LinearLayout>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

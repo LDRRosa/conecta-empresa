@@ -12,21 +12,40 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ConectaEmpresa">
+        android:theme="@style/Theme.ConectaEmpresa"
+        tools:targetApi="31">
 
         <activity
             android:name=".view.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="false" />
 
-        <activity android:name=".view.CadastroActivity" />
-        <activity android:name=".view.HomeActivity"/>
-        <activity android:name=".view.PerfilActivity"/>
+        <activity
+            android:name=".view.CadastroActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".view.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.PerfilActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".view.BuscaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".view.CadastroEmpresaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".view.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
