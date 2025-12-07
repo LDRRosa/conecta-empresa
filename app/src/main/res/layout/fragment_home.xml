@@ -246,6 +246,7 @@
                         <androidx.cardview.widget.CardView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
+                            android:layout_marginEnd="12dp"
                             app:cardBackgroundColor="@color/card_bg"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
@@ -260,7 +261,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="🔧"
+                                    android:text="🛠️"
                                     android:textSize="32sp" />
 
                                 <TextView
@@ -268,6 +269,37 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:text="Serviços"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/text_white"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            app:cardBackgroundColor="@color/card_bg"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="➕"
+                                    android:textSize="32sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:text="Outros"
                                     android:textAlignment="center"
                                     android:textColor="@color/text_white"
                                     android:textSize="11sp" />

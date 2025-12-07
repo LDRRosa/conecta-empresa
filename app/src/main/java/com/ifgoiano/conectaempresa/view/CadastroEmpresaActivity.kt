@@ -71,6 +71,13 @@ class CadastroEmpresaActivity : AppCompatActivity() {
     }
 
     private fun configurarListeners() {
+
+        configurarDropdownCategorias()
+
+        binding.btnSelecionarImagem.setOnClickListener {
+            pickImage.launch("image/*")
+        }
+
         binding.btnSelecionarImagem.setOnClickListener {
             pickImage.launch("image/*")
         }
@@ -109,6 +116,44 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         viewModel.sucessoCadastro.observe(this) { sucesso ->
             if (sucesso) {
                 finish()
+            }
+        }
+    }
+
+    private fun configurarDropdownCategorias() {
+        val categorias = arrayOf(
+            "Restaurante",
+            "Mercado",
+            "Farmácia",
+            "Moda",
+            "Serviços",
+            "Outros"
+        )
+
+        val adapter = android.widget.ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            categorias
+        )
+
+        binding.etCategoria.setAdapter(adapter)
+
+        // Desabilita a digitação inicial
+        binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
+        binding.etCategoria.keyListener = null
+
+        binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
+            if (categorias[position] == "Outros") {
+                // Habilita a digitação
+                binding.etCategoria.setText("")
+                binding.etCategoria.hint = "Digite a categoria"
+                binding.etCategoria.inputType = android.text.InputType.TYPE_CLASS_TEXT
+                binding.etCategoria.keyListener = android.text.method.TextKeyListener.getInstance()
+                binding.etCategoria.requestFocus()
+            } else {
+                // Desabilita a digitação para outras opções
+                binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
+                binding.etCategoria.keyListener = null
             }
         }
     }
