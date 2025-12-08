@@ -1,5 +1,6 @@
 package com.ifgoiano.conectaempresa.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -61,7 +62,23 @@ class BuscaActivity : AppCompatActivity() {
     private fun observarResultados() {
         viewModel.empresasFiltradas.observe(this) { lista ->
             binding.rvResultados.adapter = EmpresaDetalhadaAdapter(lista) { empresa ->
-                // Aqui você pode abrir os detalhes da empresa
+                val intent = Intent(this, DetalhesEmpresaActivity::class.java).apply {
+                    putExtra("empresa_nome", empresa.nome)
+                    putExtra("empresa_imagem", empresa.imageUrl)
+                    putExtra("empresa_descricao", empresa.descricao)
+                    putExtra("empresa_categoria", empresa.categoria)
+                    putExtra("empresa_telefone", empresa.telefone)
+                    putExtra(
+                        "empresa_endereco",
+                        if (empresa.endereco.isNotBlank()) empresa.endereco
+                        else "${empresa.street}${if (empresa.number.isNotBlank()) ", ${empresa.number}" else ""}${if (empresa.city.isNotBlank()) ", ${empresa.city}" else ""}"
+                    )
+                    putExtra("empresa_avaliacao", empresa.avaliacao.toFloat())
+                    putExtra("empresa_email", empresa.email)
+                    putExtra("empresa_latitude", empresa.latitude ?: Double.NaN)
+                    putExtra("empresa_longitude", empresa.longitude ?: Double.NaN)
+                }
+                startActivity(intent)
             }
 
             if (lista.isEmpty() && binding.etBuscaDetalhada.text.isNotEmpty()) {

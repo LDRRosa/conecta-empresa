@@ -34,6 +34,7 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         configurarMascaraTelefone()
+        configurarDropdownCategorias()
         configurarListeners()
         observarViewModel()
     }
@@ -72,14 +73,43 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         })
     }
 
-    private fun configurarListeners() {
+    private fun configurarDropdownCategorias() {
+        val categorias = listOf(
+            CategoriaItem("🍔", "Restaurantes"),
+            CategoriaItem("🛒", "Mercados"),
+            CategoriaItem("💊", "Farmácias"),
+            CategoriaItem("✂️", "Moda"),
+            CategoriaItem("🛠️", "Serviços"),
+            CategoriaItem("➕", "Outros")
+        )
 
-        configurarDropdownCategorias()
+        val adapter = CategoriaAdapter(this, categorias)
+        binding.etCategoria.setAdapter(adapter)
 
-        binding.btnSelecionarImagem.setOnClickListener {
-            pickImage.launch("image/*")
+        var categoriaSelecionada: String = ""
+
+        binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
+        binding.etCategoria.keyListener = null
+
+        binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
+            categoriaSelecionada = categorias[position].nome
+
+            if (categorias[position].nome == "Outros") {
+                binding.etCategoria.setText("")
+                binding.etCategoria.hint = "Digite a categoria"
+                binding.etCategoria.inputType =
+                    android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                binding.etCategoria.keyListener = android.text.method.TextKeyListener.getInstance()
+                binding.etCategoria.requestFocus()
+            } else {
+                binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
+                binding.etCategoria.keyListener = null
+                binding.etCategoria.setText(categoriaSelecionada)
+            }
         }
+    }
 
+    private fun configurarListeners() {
         binding.btnSelecionarImagem.setOnClickListener {
             pickImage.launch("image/*")
         }
@@ -88,19 +118,27 @@ class CadastroEmpresaActivity : AppCompatActivity() {
             pickImage.launch("image/*")
         }
 
-        binding.btnCadastrar.setOnClickListener {
-            viewModel.cadastrarEmpresa(
-                nome = binding.etNomeEmpresa.text.toString(),
-                categoria = binding.etCategoria.text.toString(),
-                descricao = binding.etDescricao.text.toString(),
-                endereco = binding.etEndereco.text.toString(),
-                telefone = binding.etTelefone.text.toString(),
-                imagemUri = imagemSelecionada
-            )
-        }
-
         binding.btnCancelar.setOnClickListener {
             finish()
+        }
+
+        // botão cadastrar agora pega todos os campos separados
+        binding.btnCadastrar.setOnClickListener {
+            val categoriaFinal = binding.etCategoria.text.toString()
+            viewModel.cadastrarEmpresa(
+                nome = binding.etNomeEmpresa.text.toString(),
+                categoria = categoriaFinal,
+                descricao = binding.etDescricao.text.toString(),
+                street = binding.etLogradouro.text.toString(),
+                number = binding.etNumero.text.toString(),
+                city = binding.etCidade.text.toString(),
+                state = binding.etEstado.text.toString(),
+                country = binding.etPais.text.toString(),
+                postalcode = binding.etCep.text.toString(),
+                telefone = binding.etTelefone.text.toString(),
+                email = binding.etEmailEmpresa.text.toString(),
+                imagemUri = imagemSelecionada
+            )
         }
     }
 
@@ -116,64 +154,7 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         }
 
         viewModel.sucessoCadastro.observe(this) { sucesso ->
-            if (sucesso) {
-                finish()
-            }
-        }
-    }
-
-    private fun configurarDropdownCategorias() {
-        val categorias = listOf(
-            CategoriaItem("🍔", "Restaurantes"),
-            CategoriaItem("🛒", "Mercados"),
-            CategoriaItem("💊", "Farmácias"),
-            CategoriaItem("✂️", "Moda"),
-            CategoriaItem("🛠️", "Serviços"),
-            CategoriaItem("➕", "Outros")
-        )
-
-        val adapter = CategoriaAdapter(this, categorias)
-        binding.etCategoria.setAdapter(adapter)
-
-        // Variável para armazenar a categoria selecionada
-        var categoriaSelecionada: String = ""
-
-        binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
-        binding.etCategoria.keyListener = null
-
-        binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
-            categoriaSelecionada = categorias[position].nome
-
-            if (categorias[position].nome == "Outros") {
-                binding.etCategoria.setText("")
-                binding.etCategoria.hint = "Digite a categoria"
-                binding.etCategoria.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS
-                binding.etCategoria.keyListener = android.text.method.TextKeyListener.getInstance()
-                binding.etCategoria.requestFocus()
-            } else {
-                binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
-                binding.etCategoria.keyListener = null
-            }
-        }
-
-        binding.etCategoria.setDropDownBackgroundResource(android.R.color.transparent)
-
-        // Ao cadastrar, use categoriaSelecionada ao invés de binding.etCategoria.text.toString()
-        binding.btnCadastrar.setOnClickListener {
-            val categoriaFinal = if (categoriaSelecionada == "Outros") {
-                binding.etCategoria.text.toString()
-            } else {
-                categoriaSelecionada
-            }
-
-            viewModel.cadastrarEmpresa(
-                nome = binding.etNomeEmpresa.text.toString(),
-                categoria = categoriaFinal,
-                descricao = binding.etDescricao.text.toString(),
-                endereco = binding.etEndereco.text.toString(),
-                telefone = binding.etTelefone.text.toString(),
-                imagemUri = imagemSelecionada
-            )
+            if (sucesso) finish()
         }
     }
 }

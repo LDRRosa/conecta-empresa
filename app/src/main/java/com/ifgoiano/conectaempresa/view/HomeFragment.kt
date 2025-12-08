@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import com.ifgoiano.conectaempresa.databinding.FragmentHomeBinding
 import com.ifgoiano.conectaempresa.viewmodel.HomeViewModel
@@ -21,7 +20,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: HomeViewModel by viewModels()
 
-    // Guarda referência do card e textview atualmente selecionados para feedback visual
     private var cardSelecionado: CardView? = null
 
     override fun onCreateView(
@@ -59,14 +57,15 @@ class HomeFragment : Fragment() {
                     putExtra("empresa_telefone", empresa.telefone)
                     putExtra("empresa_endereco", empresa.endereco)
                     putExtra("empresa_avaliacao", empresa.avaliacao.toFloat())
-                    putExtra("empresa_email", "") // Adicione se tiver email no modelo
-                    putExtra("empresa_latitude", -16.7290) // Substitua por dados reais
-                    putExtra("empresa_longitude", -49.2643) // Substitua por dados reais
+                    putExtra("empresa_email", empresa.email)
+                    putExtra("empresa_latitude", empresa.latitude ?: Double.NaN)
+                    putExtra("empresa_longitude", empresa.longitude ?: Double.NaN)
                 }
                 startActivity(intent)
             }
 
-            binding.tvQuantidadeEmpresas.text = getString(R.string.empresas_disponiveis, lista.size)
+            binding.tvQuantidadeEmpresas.text =
+                getString(com.ifgoiano.conectaempresa.R.string.empresas_disponiveis, lista.size)
         }
     }
 
@@ -80,47 +79,62 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun selecionarCard(card: CardView, tvTextViewId: Int) {
-        // Reset anterior
-        cardSelecionado?.let { antigo ->
-            antigo.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.card_bg))
-            // tenta resetar o texto se existir
-            try {
-                val antigoTv = antigo.findViewById<View>(tvTextViewId)
-                // não faz nada — simple reset handled by card color
-            } catch (_: Exception) {}
+    // agora selecionarCard faz toggle: seleciona ou desseleciona e chama o ViewModel
+    private fun selecionarCard(card: CardView, categoria: String) {
+        // se clicar no mesmo card selecionado => desseleciona e mostra todas
+        if (cardSelecionado == card) {
+            card.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.ifgoiano.conectaempresa.R.color.card_bg
+                )
+            )
+            cardSelecionado = null
+            viewModel.filtrarPorCategoria("Todas")
+            return
         }
 
-        // Aplica selecao no novo
-        card.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary_yellow))
+        // limpa seleção anterior
+        cardSelecionado?.let { antigo ->
+            antigo.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.ifgoiano.conectaempresa.R.color.card_bg
+                )
+            )
+        }
+
+        // seleciona novo
+        card.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                com.ifgoiano.conectaempresa.R.color.primary_yellow
+            )
+        )
         cardSelecionado = card
+
+        // aplica filtro
+        viewModel.filtrarPorCategoria(categoria)
     }
 
     private fun configurarCategorias() {
         binding.cardRestaurantes.setOnClickListener {
-            viewModel.filtrarPorCategoria("Restaurantes")
-            selecionarCard(binding.cardRestaurantes, R.id.tvCatRestaurantes)
+            selecionarCard(binding.cardRestaurantes, "Restaurantes")
         }
         binding.cardMercados.setOnClickListener {
-            viewModel.filtrarPorCategoria("Mercados")
-            selecionarCard(binding.cardMercados, R.id.tvCatMercados)
+            selecionarCard(binding.cardMercados, "Mercados")
         }
         binding.cardFarmacias.setOnClickListener {
-            viewModel.filtrarPorCategoria("Farmácias")
-            selecionarCard(binding.cardFarmacias, R.id.tvCatFarmacias)
+            selecionarCard(binding.cardFarmacias, "Farmácias")
         }
         binding.cardModa.setOnClickListener {
-            viewModel.filtrarPorCategoria("Moda")
-            selecionarCard(binding.cardModa, R.id.tvCatModa)
+            selecionarCard(binding.cardModa, "Moda")
         }
         binding.cardServicos.setOnClickListener {
-            viewModel.filtrarPorCategoria("Serviços")
-            selecionarCard(binding.cardServicos, R.id.tvCatServicos)
+            selecionarCard(binding.cardServicos, "Serviços")
         }
         binding.cardOutros.setOnClickListener {
-            // 'Outros' mostrará todas as empresas que NÃO sejam das categorias principais
-            viewModel.filtrarPorCategoria("Outros")
-            selecionarCard(binding.cardOutros, R.id.tvCatOutros)
+            selecionarCard(binding.cardOutros, "Outros")
         }
     }
 

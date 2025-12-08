@@ -1,6 +1,7 @@
 package com.ifgoiano.conectaempresa.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -11,8 +12,7 @@ import com.ifgoiano.conectaempresa.databinding.ItemEmpresaBinding
 class EmpresaAdapter(
     private val lista: List<Empresa>,
     private val onItemClick: (Empresa) -> Unit = {}
-) :
-    RecyclerView.Adapter<EmpresaAdapter.EmpresaViewHolder>() {
+) : RecyclerView.Adapter<EmpresaAdapter.EmpresaViewHolder>() {
 
     inner class EmpresaViewHolder(val binding: ItemEmpresaBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -21,7 +21,10 @@ class EmpresaAdapter(
             binding.root.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(lista[position])
+                    // animação de toque antes de disparar ação
+                    animateTouch(binding.root) {
+                        onItemClick(lista[position])
+                    }
                 }
             }
         }
@@ -40,13 +43,9 @@ class EmpresaAdapter(
         val empresa = lista[position]
 
         holder.binding.tvNome.text = empresa.nome
-
-
         holder.binding.tvDescricao.text = empresa.categoria
-
         holder.binding.ratingBar.rating = empresa.avaliacao.toFloat()
 
-        // Carrega a imagem usando Glide
         Glide.with(holder.itemView.context)
             .load(empresa.imageUrl)
             .circleCrop()
@@ -54,4 +53,23 @@ class EmpresaAdapter(
     }
 
     override fun getItemCount(): Int = lista.size
+
+    // animação simples de escala para feedback tátil
+    private fun animateTouch(view: View, onComplete: () -> Unit) {
+        view.animate()
+            .scaleX(0.96f)
+            .scaleY(0.96f)
+            .setDuration(80)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(80)
+                    .withEndAction {
+                        onComplete()
+                    }
+                    .start()
+            }
+            .start()
+    }
 }

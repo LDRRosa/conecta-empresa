@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.databinding.ActivityDetalhesEmpresaBinding
@@ -17,13 +16,12 @@ import org.osmdroid.views.overlay.Marker
 class DetalhesEmpresaActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetalhesEmpresaBinding
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+    private var latitude: Double = Double.NaN
+    private var longitude: Double = Double.NaN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Configuração do OSMDroid
         Configuration.getInstance().load(
             applicationContext,
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -52,8 +50,10 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
         val endereco = intent.getStringExtra("empresa_endereco") ?: ""
         val imagem = intent.getStringExtra("empresa_imagem") ?: ""
         val avaliacao = intent.getFloatExtra("empresa_avaliacao", 0f)
-        latitude = intent.getDoubleExtra("empresa_latitude", -16.7290)
-        longitude = intent.getDoubleExtra("empresa_longitude", -49.2643)
+
+        // agora esperamos que o cadastro tenha salvo latitude/longitude no banco e passado na intent
+        val latExtra = intent.getDoubleExtra("empresa_latitude", Double.NaN)
+        val lonExtra = intent.getDoubleExtra("empresa_longitude", Double.NaN)
 
         binding.apply {
             tvNomeEmpresa.text = nome
@@ -71,7 +71,21 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
                 .into(imgEmpresaDetalhes)
         }
 
-        configurarMapa()
+        if (!latExtra.isNaN() && !lonExtra.isNaN()) {
+            latitude = latExtra
+            longitude = lonExtra
+            configurarMapa()
+        } else {
+            // sem lat/lon nos extras: não fazemos chamada a Nominatim aqui (conforme solicitado)
+            Toast.makeText(
+                this,
+                "Coordenadas não disponíveis. Mostrando localização padrão.",
+                Toast.LENGTH_LONG
+            ).show()
+            latitude = -16.7290
+            longitude = -49.2643
+            configurarMapa()
+        }
     }
 
     private fun configurarMapa() {
@@ -83,13 +97,12 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
             val startPoint = GeoPoint(latitude, longitude)
             controller.setCenter(startPoint)
 
-            // Adicionar marcador
+            overlays.clear()
             val marker = Marker(this)
             marker.position = startPoint
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             marker.title = binding.tvNomeEmpresa.text.toString()
             marker.snippet = binding.tvEnderecoEmpresa.text.toString()
-
             overlays.add(marker)
         }
     }
@@ -121,20 +134,24 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
     }
 
     private fun abrirNoGoogleMaps() {
-        val uri =
-            Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude(${binding.tvNomeEmpresa.text})")
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.setPackage("com.google.android.apps.maps")
-
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
+        val lat = latitude
+        val lon = longitude
+        if (!lat.isNaN() && !lon.isNaN()) {
+            val uri =
+                Uri.parse("geo:$lat,$lon?q=$lat,$lon(${Uri.encode(binding.tvNomeEmpresa.text.toString())})")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.setPackage("com.google.android.apps.maps")
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            } else {
+                val browserIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lon")
+                )
+                startActivity(browserIntent)
+            }
         } else {
-            // Fallback: abrir no navegador
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://www.google.com/maps/search/?api=1&query=$latitude,$longitude")
-            )
-            startActivity(browserIntent)
+            Toast.makeText(this, "Coordenadas não encontradas", Toast.LENGTH_SHORT).show()
         }
     }
 

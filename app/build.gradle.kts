@@ -51,8 +51,8 @@ android {
 dependencies {
 
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("org.osmdroid:osmdroid-android:6.1.18")
-    implementation("com.github.santalu:maskara:1.0.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation("com.github.santalu:maskara:1.0")
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")

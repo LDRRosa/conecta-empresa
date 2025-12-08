@@ -25,28 +25,37 @@ class CadastroEmpresaViewModel(
         nome: String,
         categoria: String,
         descricao: String,
-        endereco: String,
+        street: String,
+        number: String,
+        city: String,
+        state: String,
+        country: String,
+        postalcode: String,
         telefone: String,
+        email: String,
         imagemUri: Uri?
     ) {
         if (nome.isBlank() || categoria.isBlank() || descricao.isBlank() ||
-            endereco.isBlank() || telefone.isBlank()
+            street.isBlank() || city.isBlank() || state.isBlank() || country.isBlank() ||
+            postalcode.isBlank() || telefone.isBlank() || email.isBlank()
         ) {
-            _status.value = "Preencha todos os campos"
+            _status.value = "Preencha todos os campos obrigatórios"
             return
         }
 
         _loading.value = true
         viewModelScope.launch {
-            repository.cadastrarEmpresa(nome, categoria, descricao, endereco, telefone, imagemUri)
-                .onSuccess {
-                    _status.value = "Empresa cadastrada com sucesso!"
-                    _sucessoCadastro.value = true
-                }
-                .onFailure { e ->
-                    _status.value = "Erro ao cadastrar: ${e.message}"
-                    _sucessoCadastro.value = false
-                }
+            repository.cadastrarEmpresa(
+                nome, categoria, descricao,
+                street, number, city, state, country, postalcode,
+                telefone, email, imagemUri
+            ).onSuccess {
+                _status.value = "Empresa cadastrada com sucesso!"
+                _sucessoCadastro.value = true
+            }.onFailure { e ->
+                _status.value = "Erro ao cadastrar: ${e.message}"
+                _sucessoCadastro.value = false
+            }
             _loading.value = false
         }
     }

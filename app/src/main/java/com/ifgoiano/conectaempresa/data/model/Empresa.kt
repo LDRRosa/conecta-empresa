@@ -8,10 +8,20 @@ data class Empresa(
     val categoria: String = "",
     val createdAt: Timestamp? = null,
     val descricao: String = "",
-    val endereco: String = "",
+    val endereco: String = "", // manter compatibilidade se usado
+    val street: String = "",
+    val number: String = "",
+    val city: String = "",
+    val state: String = "",
+    val country: String = "",
+    val postalcode: String = "",
     val imageUrl: String = "",
     val nome: String = "",
     val numAvaliacoes: Int = 0,
+    val distancia: String = "",
+    val notaMedia: Double = 0.0,
+    val email: String = "",
     val telefone: String = "",
-    val distancia: String = ""
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )
