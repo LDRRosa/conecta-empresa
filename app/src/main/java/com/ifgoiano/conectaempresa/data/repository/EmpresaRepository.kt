@@ -25,7 +25,6 @@ class EmpresaRepository {
     private val userId: String
         get() = auth.currentUser?.uid ?: throw IllegalStateException("Usuário não autenticado")
 
-
     suspend fun cadastrarEmpresa(
         nome: String,
         categoria: String,
@@ -40,13 +39,10 @@ class EmpresaRepository {
         email: String,
         imagemUri: Uri?
     ): Result<Unit> = try {
-        // roda upload/geocoding em IO
         val imageUrl = imagemUri?.let { uploadImagem(it) } ?: ""
 
-        // tenta obter lat/lon via Nominatim (pode retornar null)
         val latlon = obterLatLonNominatim(street, city, state, country, postalcode)
 
-        // monta endereço legacy incluindo cidade quando disponível
         val enderecoCompleto = buildString {
             append(street)
             if (number.isNotBlank()) append(", $number")
@@ -57,14 +53,13 @@ class EmpresaRepository {
             "nome" to nome,
             "categoria" to categoria,
             "descricao" to descricao,
-            // campos separados de endereço
             "street" to street,
             "number" to number,
             "city" to city,
             "state" to state,
             "country" to country,
             "postalcode" to postalcode,
-            "endereco" to enderecoCompleto, // agora inclui cidade
+            "endereco" to enderecoCompleto,
             "telefone" to telefone,
             "email" to email,
             "imageUrl" to imageUrl,
@@ -73,18 +68,79 @@ class EmpresaRepository {
             "numAvaliacoes" to 0,
             "distancia" to "",
             "createdAt" to Timestamp.now(),
-            // lat/lon (podem ser null)
             "latitude" to latlon?.first,
             "longitude" to latlon?.second
         )
 
         val empresaRef = db.collection("empresas").add(empresaData).await()
 
-        // armazenar referência na lista do usuário (mantendo mesma lógica)
         db.collection("usuarios")
             .document(userId)
             .update("empresas", FieldValue.arrayUnion(empresaRef))
             .await()
+
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    suspend fun carregarEmpresaPorId(id: String): Result<com.ifgoiano.conectaempresa.data.model.Empresa> =
+        try {
+            val snap = db.collection("empresas").document(id).get().await()
+            val empresa = snap.toObject(com.ifgoiano.conectaempresa.data.model.Empresa::class.java)
+                ?: throw Exception("Empresa não encontrada")
+            Result.success(empresa.copy(id = snap.id))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
+    suspend fun atualizarEmpresa(
+        id: String,
+        nome: String,
+        categoria: String,
+        descricao: String,
+        street: String,
+        number: String,
+        city: String,
+        state: String,
+        country: String,
+        postalcode: String,
+        telefone: String,
+        email: String,
+        imagemUri: Uri?
+    ): Result<Unit> = try {
+        // obter imagem atual se não for enviado novo arquivo
+        val currentSnap = db.collection("empresas").document(id).get().await()
+        val currentImage = currentSnap.getString("imageUrl") ?: ""
+
+        val imageUrl = imagemUri?.let { uploadImagem(it) } ?: currentImage
+
+        val latlon = obterLatLonNominatim(street, city, state, country, postalcode)
+
+        val enderecoCompleto = buildString {
+            append(street)
+            if (number.isNotBlank()) append(", $number")
+            if (city.isNotBlank()) append(", $city")
+        }
+
+        val updates = mutableMapOf<String, Any?>()
+        updates["nome"] = nome
+        updates["categoria"] = categoria
+        updates["descricao"] = descricao
+        updates["street"] = street
+        updates["number"] = number
+        updates["city"] = city
+        updates["state"] = state
+        updates["country"] = country
+        updates["postalcode"] = postalcode
+        updates["endereco"] = enderecoCompleto
+        updates["telefone"] = telefone
+        updates["email"] = email
+        updates["imageUrl"] = imageUrl
+        updates["latitude"] = latlon?.first
+        updates["longitude"] = latlon?.second
+
+        db.collection("empresas").document(id).update(updates).await()
 
         Result.success(Unit)
     } catch (e: Exception) {

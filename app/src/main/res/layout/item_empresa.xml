@@ -27,6 +27,8 @@
                 android:layout_height="match_parent"
                 android:contentDescription="Logo da empresa"
                 android:scaleType="centerCrop" />
+
+
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -70,6 +72,7 @@
                 android:progressTint="#FFC107"
                 android:rating="4.5"
                 android:stepSize="0.1" />
+
         </LinearLayout>
 
         <ImageView

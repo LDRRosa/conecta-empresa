@@ -21,7 +21,6 @@ class PerfilRepository {
     private val userId: String
         get() = auth.currentUser?.uid ?: throw IllegalStateException("Usuário não autenticado.")
 
-    // CARREGAR PERFIL
     suspend fun carregarPerfil(): Result<User> =
         try {
             val documentSnapshot = db.collection("usuarios").document(userId).get().await()
@@ -47,7 +46,8 @@ class PerfilRepository {
                 async {
                     try {
                         val snap = ref.get().await()
-                        snap.toObject(Empresa::class.java)
+                        val emp = snap.toObject(Empresa::class.java)
+                        emp?.copy(id = snap.id)
                     } catch (e: Exception) {
                         null
                     }

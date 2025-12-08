@@ -150,18 +150,49 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:clipToPadding="false"/>
         </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdicionarEmpresa"
+        android:id="@+id/fabMenuEmpresas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="Adicionar Empresa"
+        android:contentDescription="Menu empresas"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        app:backgroundTint="@color/primary_yellow"
+        app:layout_constraintBottom_toTopOf="@id/bottom_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/black" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabActionEditar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Editar empresa"
+        android:src="@android:drawable/ic_menu_edit"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:backgroundTint="@color/primary_yellow"
+        app:layout_constraintBottom_toTopOf="@id/bottom_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/black" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabActionAdicionar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Adicionar empresa"
         android:src="@android:drawable/ic_input_add"
+        android:visibility="gone"
+        app:fabSize="mini"
         app:backgroundTint="@color/primary_yellow"
         app:layout_constraintBottom_toTopOf="@id/bottom_card"
         app:layout_constraintEnd_toEndOf="parent"
