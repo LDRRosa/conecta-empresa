@@ -1,6 +1,7 @@
 package com.ifgoiano.conectaempresa.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,7 +18,13 @@ class EmpresaDetalhadaAdapter(
 
         init {
             binding.root.setOnClickListener {
-                onItemClick(lista[adapterPosition])
+                val pos = adapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    // animação de toque antes de disparar ação
+                    animateTouch(binding.root) {
+                        onItemClick(lista[pos])
+                    }
+                }
             }
         }
     }
@@ -50,4 +57,23 @@ class EmpresaDetalhadaAdapter(
     }
 
     override fun getItemCount(): Int = lista.size
+
+    // animação simples de escala para feedback tátil
+    private fun animateTouch(view: View, onComplete: () -> Unit) {
+        view.animate()
+            .scaleX(0.96f)
+            .scaleY(0.96f)
+            .setDuration(80)
+            .withEndAction {
+                view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(80)
+                    .withEndAction {
+                        onComplete()
+                    }
+                    .start()
+            }
+            .start()
+    }
 }

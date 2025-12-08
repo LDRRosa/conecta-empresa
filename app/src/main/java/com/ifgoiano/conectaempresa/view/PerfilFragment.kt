@@ -3,14 +3,14 @@ package com.ifgoiano.conectaempresa.view
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
@@ -36,8 +36,8 @@ class PerfilFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: android.view.LayoutInflater,
+        container: android.view.ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
@@ -154,6 +154,35 @@ class PerfilFragment : Fragment() {
                 }
                 adapter = EmpresaAdapter(empresas)
             }
+
+            // Garantir que o último item não fique coberto pelo FAB:
+            // calculamos padding inferior após layout (height do FAB pode ser zero antes)
+            binding.rvEmpresas.post {
+                val fab = binding.fabAdicionarEmpresa
+                val margin =
+                    (fab.layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.bottomMargin
+                        ?: 0
+                val extraDp = (16 * resources.displayMetrics.density).toInt() // espaço extra
+                val bottomPadding = fab.height + margin + extraDp
+                binding.rvEmpresas.setPadding(
+                    binding.rvEmpresas.paddingLeft,
+                    binding.rvEmpresas.paddingTop,
+                    binding.rvEmpresas.paddingRight,
+                    bottomPadding
+                )
+            }
+
+            // Esconder o FAB ao rolar para baixo e mostrar ao rolar para cima
+            binding.rvEmpresas.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0 && binding.fabAdicionarEmpresa.isShown) {
+                        binding.fabAdicionarEmpresa.hide()
+                    } else if (dy < 0 && !binding.fabAdicionarEmpresa.isShown) {
+                        binding.fabAdicionarEmpresa.show()
+                    }
+                }
+            })
         }
     }
 
