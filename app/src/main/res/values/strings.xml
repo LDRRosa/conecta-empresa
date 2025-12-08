@@ -6,4 +6,5 @@
     <string name="salvar">Salvar</string>
     <string name="selecione_uma_foto">Selecione uma foto</string>
     <string name="nenhuma_empresa">Você não possui empresas cadastradas.</string>
+    <string name="empresas_disponiveis">%d empresas disponíveis</string>
 </resources>

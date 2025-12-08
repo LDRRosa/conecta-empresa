@@ -8,11 +8,24 @@ import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.data.model.Empresa
 import com.ifgoiano.conectaempresa.databinding.ItemEmpresaBinding
 
-class EmpresaAdapter(private val lista: List<Empresa>) :
+class EmpresaAdapter(
+    private val lista: List<Empresa>,
+    private val onItemClick: (Empresa) -> Unit = {}
+) :
     RecyclerView.Adapter<EmpresaAdapter.EmpresaViewHolder>() {
 
     inner class EmpresaViewHolder(val binding: ItemEmpresaBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick(lista[position])
+                }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmpresaViewHolder {
         val binding = ItemEmpresaBinding.inflate(

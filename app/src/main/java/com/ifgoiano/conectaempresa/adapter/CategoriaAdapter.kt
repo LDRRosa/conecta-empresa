@@ -8,7 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.ifgoiano.conectaempresa.R
 
-data class CategoriaItem(val icone: String, val nome: String)
+data class CategoriaItem(val icone: String, val nome: String) {
+    override fun toString(): String {
+        return nome
+    }
+}
 
 class CategoriaAdapter(
     context: Context,

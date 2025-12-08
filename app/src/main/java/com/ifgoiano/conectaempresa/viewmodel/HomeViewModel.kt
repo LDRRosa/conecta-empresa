@@ -23,6 +23,8 @@ class HomeViewModel(
 
     private var listaOriginal: List<Empresa> = emptyList()
 
+    private val categoriasPrincipais = listOf("Restaurantes", "Mercados", "Farmácias", "Moda", "Serviços")
+
     fun carregarDados() {
         _loading.value = true
 
@@ -56,14 +58,23 @@ class HomeViewModel(
 
     fun filtrarPorCategoria(categoria: String) {
         if (categoria == "Todas") {
-            _empresas.value = listaOriginal
+            _empresasFiltradas.value = listaOriginal
             return
         }
 
-        val resultados = listaOriginal.filter { empresa ->
-            empresa.categoria.equals(categoria, ignoreCase = true)
+        val resultados = if (categoria.equals("Outros", ignoreCase = true)) {
+            // Retorna todas as empresas cuja categoria NÃO esteja nas categorias principais
+            listaOriginal.filter { empresa ->
+                categoriasPrincipais.none { principal ->
+                    empresa.categoria.equals(principal, ignoreCase = true)
+                }
+            }
+        } else {
+            listaOriginal.filter { empresa ->
+                empresa.categoria.equals(categoria, ignoreCase = true)
+            }
         }
 
-        _empresas.value = resultados
+        _empresasFiltradas.value = resultados
     }
 }

@@ -116,6 +116,7 @@
                         android:orientation="horizontal">
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardRestaurantes"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginEnd="12dp"
@@ -137,6 +138,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatRestaurantes"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -148,6 +150,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardMercados"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginEnd="12dp"
@@ -169,6 +172,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatMercados"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -180,6 +184,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardFarmacias"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginEnd="12dp"
@@ -201,6 +206,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatFarmacias"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -212,6 +218,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardModa"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginEnd="12dp"
@@ -233,6 +240,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatModa"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -244,6 +252,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardServicos"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_marginEnd="12dp"
@@ -265,6 +274,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatServicos"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
@@ -276,6 +286,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/cardOutros"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             app:cardBackgroundColor="@color/card_bg"
@@ -296,6 +307,7 @@
                                     android:textSize="32sp" />
 
                                 <TextView
+                                    android:id="@+id/tvCatOutros"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"

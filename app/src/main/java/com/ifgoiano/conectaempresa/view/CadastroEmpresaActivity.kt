@@ -124,9 +124,9 @@ class CadastroEmpresaActivity : AppCompatActivity() {
 
     private fun configurarDropdownCategorias() {
         val categorias = listOf(
-            CategoriaItem("🍔", "Restaurante"),
-            CategoriaItem("🛒", "Mercado"),
-            CategoriaItem("💊", "Farmácia"),
+            CategoriaItem("🍔", "Restaurantes"),
+            CategoriaItem("🛒", "Mercados"),
+            CategoriaItem("💊", "Farmácias"),
             CategoriaItem("✂️", "Moda"),
             CategoriaItem("🛠️", "Serviços"),
             CategoriaItem("➕", "Outros")
@@ -135,26 +135,45 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         val adapter = CategoriaAdapter(this, categorias)
         binding.etCategoria.setAdapter(adapter)
 
-        // Desabilita a digitação inicial
+        // Variável para armazenar a categoria selecionada
+        var categoriaSelecionada: String = ""
+
         binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
         binding.etCategoria.keyListener = null
 
         binding.etCategoria.setOnItemClickListener { _, _, position, _ ->
+            categoriaSelecionada = categorias[position].nome
+
             if (categorias[position].nome == "Outros") {
-                // Habilita a digitação
                 binding.etCategoria.setText("")
                 binding.etCategoria.hint = "Digite a categoria"
                 binding.etCategoria.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS
                 binding.etCategoria.keyListener = android.text.method.TextKeyListener.getInstance()
                 binding.etCategoria.requestFocus()
             } else {
-                // Desabilita a digitação para outras opções
                 binding.etCategoria.inputType = android.text.InputType.TYPE_NULL
                 binding.etCategoria.keyListener = null
             }
         }
 
-        // Customiza a cor de fundo do dropdown
         binding.etCategoria.setDropDownBackgroundResource(android.R.color.transparent)
+
+        // Ao cadastrar, use categoriaSelecionada ao invés de binding.etCategoria.text.toString()
+        binding.btnCadastrar.setOnClickListener {
+            val categoriaFinal = if (categoriaSelecionada == "Outros") {
+                binding.etCategoria.text.toString()
+            } else {
+                categoriaSelecionada
+            }
+
+            viewModel.cadastrarEmpresa(
+                nome = binding.etNomeEmpresa.text.toString(),
+                categoria = categoriaFinal,
+                descricao = binding.etDescricao.text.toString(),
+                endereco = binding.etEndereco.text.toString(),
+                telefone = binding.etTelefone.text.toString(),
+                imagemUri = imagemSelecionada
+            )
+        }
     }
 }
