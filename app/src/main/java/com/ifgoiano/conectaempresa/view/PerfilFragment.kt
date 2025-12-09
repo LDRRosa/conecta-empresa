@@ -27,6 +27,22 @@ class PerfilFragment : Fragment() {
     private var selectionMode = false
     private var fabMenuExpanded = false
 
+    private lateinit var pickImage: androidx.activity.result.ActivityResultLauncher<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Registrar ANTES de onViewCreated ser chamado
+        pickImage = registerForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.GetContent()
+        ) { uri: android.net.Uri? ->
+            uri?.let {
+                novaFotoUri = it
+                binding.imgPerfil.setImageURI(it)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         return binding.root
@@ -85,27 +101,11 @@ class PerfilFragment : Fragment() {
         }
 
         binding.btnSelecionarFoto.setOnClickListener {
-            if (isEditMode) {
-                val pick = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
-                    uri?.let {
-                        novaFotoUri = it
-                        binding.imgPerfil.setImageURI(it)
-                    }
-                }
-                pick.launch("image/*")
-            }
+            if (isEditMode) pickImage.launch("image/*")
         }
 
         binding.imgPerfil.setOnClickListener {
-            if (isEditMode) {
-                val pick = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
-                    uri?.let {
-                        novaFotoUri = it
-                        binding.imgPerfil.setImageURI(it)
-                    }
-                }
-                pick.launch("image/*")
-            }
+            if (isEditMode) pickImage.launch("image/*")
         }
 
         binding.btnLogout.setOnClickListener {
