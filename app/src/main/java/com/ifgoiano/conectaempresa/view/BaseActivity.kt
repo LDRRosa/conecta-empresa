@@ -1,10 +1,11 @@
 package com.ifgoiano.conectaempresa.view
 
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ifgoiano.conectaempresa.R
+import com.ifgoiano.conectaempresa.view.fragment.HomeFragment
+import com.ifgoiano.conectaempresa.view.fragment.PerfilFragment
 
 abstract class BaseActivity : AppCompatActivity() {
 

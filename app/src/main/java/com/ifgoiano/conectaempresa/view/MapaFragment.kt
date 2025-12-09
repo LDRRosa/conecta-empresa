@@ -16,12 +16,12 @@ import androidx.preference.PreferenceManager
 import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.data.model.Empresa
 import com.ifgoiano.conectaempresa.databinding.FragmentMapaBinding
+import com.ifgoiano.conectaempresa.view.fragment.ClusterBottomSheetFragment
 import com.ifgoiano.conectaempresa.viewmodel.MapaViewModel
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
-import kotlin.math.roundToInt
 
 class MapaFragment : Fragment() {
 

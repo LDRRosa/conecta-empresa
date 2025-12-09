@@ -344,7 +344,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Empresas Próximas"
+                            android:text="Empresas"
                             android:textColor="@color/text_white"
                             android:textSize="22sp"
                             android:textStyle="bold" />

@@ -29,11 +29,10 @@ class HomeViewModel(
         _loading.value = true
 
         viewModelScope.launch {
-            val listaBannerObjects = repository.carregarBanners()
+
             val listaEmpresasRetorno = repository.carregarEmpresas()
 
             listaOriginal = listaEmpresasRetorno
-            _banners.value = listaBannerObjects.map { it.imageUrl }
             _empresas.value = listaEmpresasRetorno
             _empresasFiltradas.value = listaEmpresasRetorno
 

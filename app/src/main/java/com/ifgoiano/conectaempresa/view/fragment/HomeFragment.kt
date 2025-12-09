@@ -1,4 +1,4 @@
-package com.ifgoiano.conectaempresa.view
+package com.ifgoiano.conectaempresa.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ifgoiano.conectaempresa.R
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import com.ifgoiano.conectaempresa.databinding.FragmentHomeBinding
+import com.ifgoiano.conectaempresa.view.BuscaActivity
+import com.ifgoiano.conectaempresa.view.DetalhesEmpresaActivity
 import com.ifgoiano.conectaempresa.viewmodel.HomeViewModel
 
 class HomeFragment : Fragment() {
@@ -65,7 +68,7 @@ class HomeFragment : Fragment() {
             }
 
             binding.tvQuantidadeEmpresas.text =
-                getString(com.ifgoiano.conectaempresa.R.string.empresas_disponiveis, lista.size)
+                getString(R.string.empresas_disponiveis, lista.size)
         }
     }
 
@@ -86,7 +89,7 @@ class HomeFragment : Fragment() {
             card.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.ifgoiano.conectaempresa.R.color.card_bg
+                    R.color.card_bg
                 )
             )
             cardSelecionado = null
@@ -99,7 +102,7 @@ class HomeFragment : Fragment() {
             antigo.setCardBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.ifgoiano.conectaempresa.R.color.card_bg
+                    R.color.card_bg
                 )
             )
         }
@@ -108,7 +111,7 @@ class HomeFragment : Fragment() {
         card.setCardBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.ifgoiano.conectaempresa.R.color.primary_yellow
+                R.color.primary_yellow
             )
         )
         cardSelecionado = card

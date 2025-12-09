@@ -1,15 +1,17 @@
-package com.ifgoiano.conectaempresa.view
+package com.ifgoiano.conectaempresa.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.R
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ifgoiano.conectaempresa.adapter.EmpresaDetalhadaAdapter
 import com.ifgoiano.conectaempresa.data.model.Empresa
 import com.ifgoiano.conectaempresa.databinding.BottomSheetClusterBinding
+import com.ifgoiano.conectaempresa.view.DetalhesEmpresaActivity
 
 class ClusterBottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -20,7 +22,7 @@ class ClusterBottomSheetFragment : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     override fun getTheme(): Int =
-        com.google.android.material.R.style.Theme_Material3_Light_BottomSheetDialog
+        R.style.Theme_Material3_Light_BottomSheetDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
