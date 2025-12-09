@@ -78,8 +78,6 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
             tvTelefoneEmpresa.text = telefoneEmpresa
             tvEmailEmpresa.text = email
             tvEnderecoEmpresa.text = endereco
-            ratingBarDetalhes.rating = avaliacao
-            tvAvaliacaoNumero.text = String.format("%.1f", avaliacao)
 
             Glide.with(this@DetalhesEmpresaActivity)
                 .load(imagem)
@@ -87,20 +85,20 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
                 .into(imgEmpresaDetalhes)
         }
 
-        if (!latExtra.isNaN() && !lonExtra.isNaN()) {
+        if (!latExtra.isNaN() && !lonExtra.isNaN() && latExtra != 0.0 && lonExtra != 0.0) {
             latitude = latExtra
             longitude = lonExtra
             configurarMapa()
         } else {
             Toast.makeText(
                 this,
-                "Coordenadas não disponíveis. Mostrando localização padrão.",
+                "Coordenadas não disponíveis. Mapa não será exibido.",
                 Toast.LENGTH_LONG
             ).show()
-            latitude = -16.7290
-            longitude = -49.2643
-            configurarMapa()
+            binding.cardViewMapa.visibility = View.GONE
+            binding.btnAbrirMapa.visibility = View.GONE
         }
+
     }
 
     private fun configurarMapa() {
@@ -151,8 +149,9 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
     private fun abrirNoGoogleMaps() {
         val lat = latitude
         val lon = longitude
-        if (!lat.isNaN() && !lon.isNaN()) {
-            val uri = Uri.parse("geo:$lat,$lon?q=$lat,$lon(${Uri.encode(binding.tvNomeEmpresa.text.toString())})")
+        if (!lat.isNaN() && !lon.isNaN() && lat != 0.0 && lon != 0.0) {
+            val uri =
+                Uri.parse("geo:$lat,$lon?q=$lat,$lon(${Uri.encode(binding.tvNomeEmpresa.text.toString())})")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
             if (intent.resolveActivity(packageManager) != null) {
@@ -211,7 +210,8 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
                         .document(userId)
                         .get()
                         .addOnSuccessListener { usuarioDoc ->
-                            val empresasDoUsuario = usuarioDoc.get("empresas") as? List<*> ?: emptyList()
+                            val empresasDoUsuario =
+                                usuarioDoc.get("empresas") as? List<*> ?: emptyList()
 
                             if (empresasDoUsuario.contains(empresaRef)) {
                                 // É dono da empresa - ocultar botão
