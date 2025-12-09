@@ -204,4 +204,38 @@ class EmpresaRepository {
             null
         }
     }
+    suspend fun salvarAvaliacao(
+        empresaId: String,
+        nota: Float,
+        comentario: String
+    ): Result<Unit> = try {
+        val avaliacaoData = hashMapOf(
+            "empresaId" to empresaId,
+            "userId" to userId,
+            "nota" to nota,
+            "comentario" to comentario,
+            "createdAt" to Timestamp.now()
+        )
+
+        // Salva a avaliação
+        db.collection("avaliacoes").add(avaliacaoData).await()
+
+        // Atualiza a média da empresa
+        val empresa = db.collection("empresas").document(empresaId).get().await()
+        val avaliacaoAtual = empresa.getDouble("avaliacao") ?: 0.0
+        val numAvaliacoes = empresa.getLong("numAvaliacoes")?.toInt() ?: 0
+
+        val novaMedia = ((avaliacaoAtual * numAvaliacoes) + nota) / (numAvaliacoes + 1)
+
+        db.collection("empresas").document(empresaId).update(
+            mapOf(
+                "avaliacao" to novaMedia,
+                "numAvaliacoes" to (numAvaliacoes + 1)
+            )
+        ).await()
+
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 }
