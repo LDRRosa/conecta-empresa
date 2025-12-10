@@ -35,14 +35,26 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <ImageView
-                        android:id="@+id/imgPerfil"
+                    <!-- FrameLayout para sobrepor imagem corretamente -->
+                    <FrameLayout
                         android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:background="@drawable/bg_profile_image"
-                        android:contentDescription="Foto de perfil"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/icon_perfil" />
+                        android:layout_height="120dp">
+
+                        <!-- Círculo de fundo amarelo -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_profile_image" />
+
+                        <!-- Imagem de perfil -->
+                        <ImageView
+                            android:id="@+id/imgPerfil"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Foto de perfil"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/icon_perfil" />
+                    </FrameLayout>
 
                     <Button
                         android:id="@+id/btnSelecionarFoto"
@@ -54,6 +66,7 @@
                         android:textColor="@color/black"
                         android:visibility="gone" />
 
+                    <!-- Resto do layout permanece igual -->
                     <TextView
                         android:id="@+id/tvNome"
                         android:layout_width="wrap_content"
@@ -211,4 +224,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="#FFC107" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

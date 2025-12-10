@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.adapter.EmpresaAdapter
 import com.ifgoiano.conectaempresa.data.model.Empresa
+import com.ifgoiano.conectaempresa.databinding.DialogErroBinding
+import com.ifgoiano.conectaempresa.databinding.DialogSucessoBinding
 import com.ifgoiano.conectaempresa.databinding.FragmentPerfilBinding
 import com.ifgoiano.conectaempresa.view.CadastroEmpresaActivity
 import com.ifgoiano.conectaempresa.view.DetalhesEmpresaActivity
@@ -41,18 +44,21 @@ class PerfilFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Registrar ANTES de onViewCreated ser chamado
         pickImage = registerForActivityResult(
             ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
             uri?.let {
                 novaFotoUri = it
-                binding.imgPerfil.setImageURI(it)
+                carregarImagemPerfil(it.toString(), isPreview = true)
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -66,10 +72,10 @@ class PerfilFragment : Fragment() {
 
     private fun configurarListeners() {
         binding.fabMenuEmpresas.setOnClickListener {
-            // Se estiver em selectionMode, um clique no menu cancela seleção (feedback claro)
             if (selectionMode) {
                 setSelectionMode(false)
-                Toast.makeText(requireContext(), "Modo seleção cancelado.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Modo seleção cancelado.", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
             toggleFabMenu()
@@ -82,18 +88,21 @@ class PerfilFragment : Fragment() {
         }
 
         binding.fabActionEditar.setOnClickListener {
-            // agora este botão alterna o modo seleção diretamente e dá feedback visual claro
             val next = !selectionMode
             collapseFabMenu()
             setSelectionMode(next)
             if (next) {
-                Toast.makeText(requireContext(), "Modo seleção ativado. Toque numa empresa para editar.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Modo seleção ativado. Toque numa empresa para editar.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(requireContext(), "Modo seleção desativado.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Modo seleção desativado.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
-        // listeners de perfil / foto / logout (mantidos)
         binding.btnEditarPerfil.setOnClickListener {
             isEditMode = true
             setEditingEnabled(true)
@@ -102,10 +111,14 @@ class PerfilFragment : Fragment() {
 
         binding.btnSalvar.setOnClickListener {
             if (!isEditMode) {
-                Toast.makeText(requireContext(), "Entre em modo de edição primeiro.", Toast.LENGTH_SHORT).show()
+                mostrarDialogoErro("Entre em modo de edição primeiro.")
                 return@setOnClickListener
             }
             val nome = binding.etNome.text.toString().trim()
+            if (nome.isBlank()) {
+                mostrarDialogoErro("O nome não pode estar vazio.")
+                return@setOnClickListener
+            }
             viewModel.atualizarPerfil(nome, null, null, null, novaFotoUri)
         }
 
@@ -150,7 +163,12 @@ class PerfilFragment : Fragment() {
 
         binding.fabMenuEmpresas.setImageResource(R.drawable.ic_menu_close_clear_cancel)
         binding.fabMenuEmpresas.backgroundTintList =
-            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), com.ifgoiano.conectaempresa.R.color.accent_red))
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.ifgoiano.conectaempresa.R.color.accent_red
+                )
+            )
     }
 
     private fun collapseFabMenu() {
@@ -176,27 +194,49 @@ class PerfilFragment : Fragment() {
 
         binding.fabMenuEmpresas.setImageResource(R.drawable.ic_menu_sort_by_size)
         binding.fabMenuEmpresas.backgroundTintList =
-            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), com.ifgoiano.conectaempresa.R.color.primary_yellow))
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    com.ifgoiano.conectaempresa.R.color.primary_yellow
+                )
+            )
     }
 
     private fun setSelectionMode(enabled: Boolean) {
         selectionMode = enabled
         val ctx = requireContext()
         if (enabled) {
-            // menu mostra que estamos em modo seleção: ícone lápis + cor de alerta
             binding.fabMenuEmpresas.setImageResource(R.drawable.ic_menu_edit)
             binding.fabMenuEmpresas.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(ctx, com.ifgoiano.conectaempresa.R.color.accent_red))
-            // destacar botão editar também
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        ctx,
+                        com.ifgoiano.conectaempresa.R.color.accent_red
+                    )
+                )
             binding.fabActionEditar.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(ctx, com.ifgoiano.conectaempresa.R.color.accent_red))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        ctx,
+                        com.ifgoiano.conectaempresa.R.color.accent_red
+                    )
+                )
         } else {
-            // restaurar aparência padrão
             binding.fabMenuEmpresas.setImageResource(R.drawable.ic_menu_sort_by_size)
             binding.fabMenuEmpresas.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(ctx, com.ifgoiano.conectaempresa.R.color.primary_yellow))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        ctx,
+                        com.ifgoiano.conectaempresa.R.color.primary_yellow
+                    )
+                )
             binding.fabActionEditar.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(ctx, com.ifgoiano.conectaempresa.R.color.primary_yellow))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        ctx,
+                        com.ifgoiano.conectaempresa.R.color.primary_yellow
+                    )
+                )
         }
     }
 
@@ -241,9 +281,7 @@ class PerfilFragment : Fragment() {
             }
         }
 
-        // ajustar padding inferior para evitar sobreposição dos FABs
         binding.rvEmpresas.post {
-            // usa altura real do bottom_card e do fab menu (fallback para dp caso 0)
             val bottomCardH = binding.bottomCard.height.takeIf { it > 0 }
                 ?: (56 * resources.displayMetrics.density).toInt()
             val fabH = binding.fabMenuEmpresas.height.takeIf { it > 0 }
@@ -259,7 +297,6 @@ class PerfilFragment : Fragment() {
             binding.rvEmpresas.clipToPadding = false
         }
 
-        // esconder/mostrar o menu ao rolar (mantém comportamento)
         binding.rvEmpresas.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -269,7 +306,6 @@ class PerfilFragment : Fragment() {
                     binding.fabActionEditar.hide()
                 } else if (dy < 0) {
                     binding.fabMenuEmpresas.show()
-                    // só mostra ações se o menu estiver expandido
                     if (fabMenuExpanded) {
                         binding.fabActionAdicionar.show()
                         binding.fabActionEditar.show()
@@ -283,18 +319,23 @@ class PerfilFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding.tvNome.text = user.name
             binding.tvEmail.text = user.email
-            carregarImagemPerfil(user.imageurl)
+            carregarImagemPerfil(user.imageurl, isPreview = false)
             configurarListaEmpresas(user.empresas)
         }
 
         viewModel.status.observe(viewLifecycleOwner) { mensagem ->
-            if (!mensagem.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), mensagem, Toast.LENGTH_SHORT).show()
+            if (!mensagem.isNullOrEmpty() && mensagem.isNotBlank()) {
+                if (mensagem.startsWith("Erro")) {
+                    mostrarDialogoErro(mensagem)
+                }
                 viewModel.limparStatus()
             }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) { loading ->
+            // Atualiza o overlay de loading
+            binding.loadingOverlay.visibility = if (loading) View.VISIBLE else View.GONE
+
             binding.btnSalvar.isEnabled = !loading
             binding.btnEditarPerfil.isEnabled = !loading
             binding.btnSelecionarFoto.isEnabled = !loading
@@ -303,9 +344,10 @@ class PerfilFragment : Fragment() {
 
         viewModel.sucessoAtualizacao.observe(viewLifecycleOwner) { sucesso ->
             if (sucesso == true) {
-                Toast.makeText(requireContext(), "Perfil atualizado.", Toast.LENGTH_SHORT).show()
+                mostrarDialogoSucesso("Perfil atualizado com sucesso!")
                 isEditMode = false
                 setEditingEnabled(false)
+                novaFotoUri = null
             }
         }
 
@@ -329,16 +371,74 @@ class PerfilFragment : Fragment() {
         if (!enabled) novaFotoUri = null
     }
 
-    private fun carregarImagemPerfil(imageUrl: String) {
+    private fun carregarImagemPerfil(imageUrl: String, isPreview: Boolean = false) {
         if (imageUrl.isNotEmpty()) {
             Glide.with(this)
-                .load(imageUrl)
+                .load(if (isPreview) Uri.parse(imageUrl) else imageUrl)
                 .placeholder(com.ifgoiano.conectaempresa.R.drawable.icon_perfil)
                 .circleCrop()
                 .into(binding.imgPerfil)
         } else {
             binding.imgPerfil.setImageResource(com.ifgoiano.conectaempresa.R.drawable.icon_perfil)
         }
+    }
+
+    private fun mostrarDialogoSucesso(mensagem: String) {
+        val dialogBinding = DialogSucessoBinding.inflate(layoutInflater)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogBinding.tvMensagemSucesso.text = mensagem
+
+        dialogBinding.btnOkSucesso.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+        dialogBinding.root.alpha = 0f
+        dialogBinding.root.scaleX = 0.8f
+        dialogBinding.root.scaleY = 0.8f
+        dialogBinding.root.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(300)
+            .start()
+    }
+
+    private fun mostrarDialogoErro(mensagem: String) {
+        val dialogBinding = DialogErroBinding.inflate(layoutInflater)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogBinding.tvMensagemErro.text = mensagem
+
+        dialogBinding.btnOkErro.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+        dialogBinding.root.alpha = 0f
+        dialogBinding.root.scaleX = 0.8f
+        dialogBinding.root.scaleY = 0.8f
+        dialogBinding.root.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(300)
+            .start()
     }
 
     override fun onDestroyView() {

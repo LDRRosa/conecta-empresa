@@ -8,8 +8,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import android.view.View
+import android.view.animation.AnimationUtils
 import com.bumptech.glide.Glide
 import com.ifgoiano.conectaempresa.databinding.ActivityCadastroEmpresaBinding
+import com.ifgoiano.conectaempresa.databinding.DialogSucessoBinding
 import com.ifgoiano.conectaempresa.viewmodel.CadastroEmpresaViewModel
 import com.ifgoiano.conectaempresa.adapter.CategoriaAdapter
 import com.ifgoiano.conectaempresa.adapter.CategoriaItem
@@ -175,17 +179,27 @@ class CadastroEmpresaActivity : AppCompatActivity() {
 
     private fun observarViewModel() {
         viewModel.status.observe(this) { mensagem ->
-            Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+            // Só mostra toast de erro, sucesso será mostrado no diálogo
+            if (mensagem.contains("Erro", ignoreCase = true) ||
+                mensagem.contains("Preencha", ignoreCase = true)) {
+                Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.loading.observe(this) { loading ->
+            // Mostrar/ocultar overlay de loading
+            binding.loadingOverlay.visibility = if (loading) View.VISIBLE else View.GONE
+
+            // Desabilitar interação com botões durante loading
             binding.btnCadastrar.isEnabled = !loading
             binding.btnCancelar.isEnabled = !loading
             binding.btnSelecionarImagem.isEnabled = !loading
         }
 
         viewModel.sucessoCadastro.observe(this) { sucesso ->
-            if (sucesso) finish()
+            if (sucesso) {
+                mostrarDialogoSucesso()
+            }
         }
 
         // observar empresa carregada para edição
@@ -216,5 +230,44 @@ class CadastroEmpresaActivity : AppCompatActivity() {
         } else {
             binding.imgEmpresa.setImageResource(com.ifgoiano.conectaempresa.R.drawable.icon_perfil)
         }
+    }
+
+    private fun mostrarDialogoSucesso() {
+        val dialogBinding = DialogSucessoBinding.inflate(layoutInflater)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        // Tornar o fundo do diálogo transparente para mostrar os cantos arredondados
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // Definir mensagem baseada no modo (cadastro ou edição)
+        if (isEditMode) {
+            dialogBinding.tvTituloSucesso.text = "Atualizado!"
+            dialogBinding.tvMensagemSucesso.text = "Empresa atualizada com sucesso!"
+        } else {
+            dialogBinding.tvTituloSucesso.text = "Sucesso!"
+            dialogBinding.tvMensagemSucesso.text = "Empresa cadastrada com sucesso!"
+        }
+
+        dialogBinding.btnOkSucesso.setOnClickListener {
+            dialog.dismiss()
+            finish()
+        }
+
+        dialog.show()
+
+        // Animar o card do diálogo
+        dialogBinding.root.alpha = 0f
+        dialogBinding.root.scaleX = 0.8f
+        dialogBinding.root.scaleY = 0.8f
+        dialogBinding.root.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(300)
+            .start()
     }
 }

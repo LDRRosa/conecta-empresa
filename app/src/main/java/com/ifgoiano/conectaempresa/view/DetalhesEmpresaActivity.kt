@@ -147,24 +147,42 @@ class DetalhesEmpresaActivity : AppCompatActivity() {
     }
 
     private fun abrirNoGoogleMaps() {
-        val lat = latitude
-        val lon = longitude
-        if (!lat.isNaN() && !lon.isNaN() && lat != 0.0 && lon != 0.0) {
-            val uri =
-                Uri.parse("geo:$lat,$lon?q=$lat,$lon(${Uri.encode(binding.tvNomeEmpresa.text.toString())})")
+        val endereco = binding.tvEnderecoEmpresa.text.toString()
+
+        if (endereco.isNotEmpty()) {
+            // Usar o endereço completo para busca mais precisa
+            val enderecoCompleto = "$endereco, $nomeEmpresa"
+            val uri = Uri.parse("geo:0,0?q=${Uri.encode(enderecoCompleto)}")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
+
+            if (intent.resolveActivity(packageManager) != null) {
+                startActivity(intent)
+            } else {
+                // Fallback para navegador
+                val browserIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(enderecoCompleto)}")
+                )
+                startActivity(browserIntent)
+            }
+        } else if (!latitude.isNaN() && !longitude.isNaN() && latitude != 0.0 && longitude != 0.0) {
+            // Fallback para coordenadas se não houver endereço
+            val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude(${Uri.encode(nomeEmpresa)})")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.setPackage("com.google.android.apps.maps")
+
             if (intent.resolveActivity(packageManager) != null) {
                 startActivity(intent)
             } else {
                 val browserIntent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$lon")
+                    Uri.parse("https://www.google.com/maps/search/?api=1&query=$latitude,$longitude")
                 )
                 startActivity(browserIntent)
             }
         } else {
-            Toast.makeText(this, "Coordenadas não encontradas", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Endereço não disponível", Toast.LENGTH_SHORT).show()
         }
     }
 

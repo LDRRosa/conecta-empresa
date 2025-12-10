@@ -1,41 +1,68 @@
 package com.ifgoiano.conectaempresa.viewmodel
 
-        import androidx.lifecycle.LiveData
-        import androidx.lifecycle.MutableLiveData
-        import androidx.lifecycle.ViewModel
-        import androidx.lifecycle.viewModelScope
-        import com.ifgoiano.conectaempresa.data.repository.AuthRepository
-        import kotlinx.coroutines.launch
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
-        class LoginViewModel(
-            private val repository: AuthRepository = AuthRepository()
-        ) : ViewModel() {
+class LoginViewModel : ViewModel() {
 
-            private val _loginStatus = MutableLiveData<String>()
-            val loginStatus: LiveData<String> = _loginStatus
+    private val auth = FirebaseAuth.getInstance()
 
-            private val _navegarParaHome = MutableLiveData<Boolean>()
-            val navegarParaHome: LiveData<Boolean> = _navegarParaHome
+    private val _navegarParaHome = MutableLiveData<Boolean>()
+    val navegarParaHome: LiveData<Boolean> = _navegarParaHome
 
-            fun verificarSessao() {
-                if (repository.usuarioEstaLogado()) {
-                    _navegarParaHome.value = true
-                }
-            }
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
 
-            fun fazerLogin(email: String, senha: String) {
-                if (email.isEmpty() || senha.isEmpty()) {
-                    _loginStatus.value = "Preencha todos os campos"
-                    return
-                }
+    private val _mensagemErro = MutableLiveData<String?>()
+    val mensagemErro: LiveData<String?> = _mensagemErro
 
-                viewModelScope.launch {
-                    val resultado = repository.loginUsuario(email, senha)
-                    if (resultado.isSuccess) {
-                        _navegarParaHome.value = true
-                    } else {
-                        _loginStatus.value = "Erro: ${resultado.exceptionOrNull()?.message}"
-                    }
-                }
-            }
+    private val _sucessoLogin = MutableLiveData<Boolean>()
+    val sucessoLogin: LiveData<Boolean> = _sucessoLogin
+
+    fun verificarSessao() {
+        if (auth.currentUser != null) {
+            _navegarParaHome.value = true
         }
+    }
+
+    fun fazerLogin(email: String, senha: String) {
+        if (email.isBlank() || senha.isBlank()) {
+            _mensagemErro.value = "Preencha todos os campos"
+            return
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _mensagemErro.value = "Email inválido"
+            return
+        }
+
+        _loading.value = true
+
+        auth.signInWithEmailAndPassword(email, senha)
+            .addOnCompleteListener { task ->
+                _loading.value = false
+                if (task.isSuccessful) {
+                    _sucessoLogin.value = true
+                } else {
+                    val mensagem = when (task.exception) {
+                        is FirebaseAuthInvalidUserException -> "Usuário não encontrado"
+                        is FirebaseAuthInvalidCredentialsException -> "Senha incorreta"
+                        else -> "Erro ao fazer login: ${task.exception?.message}"
+                    }
+                    _mensagemErro.value = mensagem
+                }
+            }
+    }
+
+    fun limparMensagemErro() {
+        _mensagemErro.value = null
+    }
+
+    fun navegarParaHomeAposSucesso() {
+        _navegarParaHome.value = true
+    }
+}
